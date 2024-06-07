@@ -60,8 +60,6 @@ func writeTemplate(afs *afero.Afero, filename string, results models.Results) er
 		return err
 	}
 
-	// markdownToHTML(results)
-
 	template := genTemplate("output")
 	err = template.ExecuteTemplate(file, "output", results)
 	if err != nil {
@@ -95,19 +93,6 @@ func processPercentiles(results models.Results) {
 	}
 }
 
-// // markdownToHTML converts the Markdown descriptions of vulnerabilities in
-// // the given results to HTML. It uses the Blackfriday library to perform the
-// // conversion and sanitizes the HTML using Bluemonday.
-// func markdownToHTML(results models.Results) {
-// 	for i := range results.Packages {
-// 		for ii := range results.Packages[i].Vulnerabilities {
-// 			md := []byte(results.Packages[i].Vulnerabilities[ii].Description)
-// 			html := markdown.ToHTML(md, nil, nil)
-// 			results.Packages[i].Vulnerabilities[ii].Description = string(bluemonday.UGCPolicy().SanitizeBytes(html))
-// 		}
-// 	}
-// }
-//
 func genTemplate(output string) (t *template.Template) {
 
 	content := `
@@ -134,10 +119,8 @@ No vulnerabilities found!
 ## Licenses
 
 The following licenses were found by ` + "`bomber`" + `:
-
 {{ range $license := .Licenses }}
-- {{ $license }}
-{{ end }}
+- {{ $license }}{{ end }}
 {{ else }}
 **No license information detected.**
 {{ end }}
@@ -182,15 +165,14 @@ EPSS: {{ .Epss.Percentile }}
 
 {{ .Description }}
 
-{{ end }}
-
-{{ end }}
-{{ end }}
-
 <hr>
 
-Powered by the [DevOps Kung Fu Mafia](https://github.com/devops-kung-fu)
+{{ end }}
+
+{{ end }}
+{{ end }}
+
+<sub>Powered by the [DevOps Kung Fu Mafia](https://github.com/devops-kung-fu)</sub>
 `
 	return template.Must(template.New(output).Parse(content))
 }
-
