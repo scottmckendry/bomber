@@ -110,11 +110,9 @@ No vulnerabilities found!
 
 {{ if ne (len .Files) 0 }} 
 ## Scanned Files
-{{ range .Files }}
-**{{ .Name }}** (sha256:{{ .SHA256 }})
-{{ end }}
-{{end}}
 
+{{ range .Files }}**{{ .Name }}** (sha256:{{ .SHA256 }}){{ end }}
+{{end}}
 {{ if ne (len .Licenses) 0 }} 
 ## Licenses
 
@@ -144,23 +142,13 @@ Only showing vulnerabilities with a severity of ***{{ .Meta.SeverityFilter }}***
 
 {{ range .Packages }}
 ### {{ .Purl }}
-
-{{ .Description }}
-			
+{{if .Description }}{{ .Description }}{{ end }}
 #### Vulnerabilities
 
 {{ range .Vulnerabilities }}
-{{ if .Title }}
-##### {{ .Title }}
-
-{{ end }}
-Severity: **{{ .Severity }}**
-
-{{ if ne (len .Epss.Percentile) 0 }} 
-EPSS: {{ .Epss.Percentile }}
-
-{{ end }}
-
+{{ if .Title }}Title: **{{ .Title }}**<br>{{ end }}
+Severity: **{{ .Severity }}**<br>
+{{ if ne (len .Epss.Percentile) 0 }} EPSS: {{ .Epss.Percentile }}<br>{{ end }}
 [Reference Documentation]({{ .Reference }})
 
 {{ .Description }}
